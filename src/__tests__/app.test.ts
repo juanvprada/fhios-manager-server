@@ -1,10 +1,13 @@
-import request from 'supertest';
-import app from '../app';
+import sequelize from '../sequelize';
 
-describe('GET /api/hello', () => {
-  it('should respond with a message', async () => {
-    const response = await request(app).get('/api/hello');
-    expect(response.status).toBe(200);
-    expect(response.body.message).toBe('Hello, world!');
+describe('Database Connection', () => {
+  it('should connect to the database successfully', async () => {
+    try {
+      await sequelize.authenticate();
+      console.log('Connection has been established successfully.');
+    } catch (error) {
+      console.error('Unable to connect to the database:', error);
+      throw error;
+    }
   });
 });
