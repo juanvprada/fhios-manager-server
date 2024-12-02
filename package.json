@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.5",
     "sequelize": "^6.37.5",
+    "sequelize-typescript": "^2.1.6",
     "supertest": "^6.1.6"
   },
   "devDependencies": {
