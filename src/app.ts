@@ -14,10 +14,12 @@ app.use(cors());
 app.use(express.json());
 app.use('/api', userRoutes);
 
-sequelize.sync({ force: false }).then(() => {
-  app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-  });
+sequelize.authenticate()
+  .then(() => console.log('Database connected..Server is running'))
+  .catch(err => console.log('Error: ' + err));
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
 
 export default app;
