@@ -1,4 +1,4 @@
-import sequelize from '../sequelize';
+import sequelize from '../config/sequelize';
 
 describe('Database Connection', () => {
   it('should connect to the database successfully', async () => {
