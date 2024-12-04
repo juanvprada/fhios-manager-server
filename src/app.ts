@@ -1,8 +1,8 @@
 import express, { Application } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import userRoutes from './routes/user-routes';
-import sequelize from './sequelize';
+import userRoutes from './routes/UserRoute';
+import sequelize from './config/sequelize';
 
 // Cargar variables de entorno desde el archivo .env
 dotenv.config();
