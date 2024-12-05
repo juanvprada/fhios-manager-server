@@ -13,6 +13,7 @@ import knowledgeBaseRoutes from './routes/KnowledgeBaseRoute';
 import notificationRoutes from './routes/NotificationRoute';
 import activityLogRoutes from './routes/ActivityLogRoute';
 import sequelize from './config/sequelize';
+import authRoutes from './routes/authRoutes';
 
 // Cargar variables de entorno desde el archivo .env
 dotenv.config();
@@ -33,6 +34,8 @@ app.use('/api', documentRoutes);
 app.use('/api', knowledgeBaseRoutes);
 app.use('/api', notificationRoutes);
 app.use('/api', activityLogRoutes);
+
+app.use('/api/auth', authRoutes);   
 
 sequelize.authenticate()
   .then(() => console.log('Database connected..Server is running'))
