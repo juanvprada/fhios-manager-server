@@ -16,10 +16,10 @@ const postmanCollection = {
     request: {
       method: endpoint.methods[0], // Toma el primer método
       url: {
-        raw: `http://localhost:5000${endpoint.path}`,
+        raw: `http://localhost:3000${endpoint.path}`,
         protocol: 'http',
         host: ['localhost'],
-        port: '5000',
+        port: '3000',
         path: endpoint.path.split('/').filter(Boolean),
       },
     },
