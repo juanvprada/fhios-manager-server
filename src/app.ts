@@ -14,15 +14,17 @@ import notificationRoutes from './routes/NotificationRoute';
 import activityLogRoutes from './routes/ActivityLogRoute';
 import sequelize from './config/sequelize';
 import authRoutes from './routes/authRoutes';
+import { initializeDB } from './models/Associations';
 
 // Cargar variables de entorno desde el archivo .env
 dotenv.config();
 
 const app: Application = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
 app.use('/api', userRoutes);
 app.use('/api', roleRoutes);
 app.use('/api', userRoleRoutes);
@@ -34,17 +36,26 @@ app.use('/api', documentRoutes);
 app.use('/api', knowledgeBaseRoutes);
 app.use('/api', notificationRoutes);
 app.use('/api', activityLogRoutes);
+app.use('/api/auth', authRoutes);
 
-app.use('/api/auth', authRoutes);   
+// sequelize.authenticate()
+//   .then(() => console.log('Database connected..Server is running'))
+//   .catch(err => console.log('Error: ' + err));
+const startServer = async () => {
+  try {
 
-sequelize.authenticate()
-  .then(() => console.log('Database connected..Server is running'))
-  .catch(err => console.log('Error: ' + err));
+    await initializeDB();
+    if (process.env.NODE_ENV !== 'test') {
+      app.listen(port, () => {
+        console.log(`Server is running on http://localhost:${port}`);
+      });
+    }
+  } catch (error) {
+    console.error('Error starting server:', error);
+    process.exit(1);
+  }
+};
 
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-  });
-}
+startServer();
 
 export default app;

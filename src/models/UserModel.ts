@@ -1,6 +1,8 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/sequelize';
 import bcrypt from 'bcryptjs';
+import Role from './RoleModel';
+import UserRole from './UserRoleModel';
 
 interface UserAttributes {
   user_id: number;
@@ -81,6 +83,13 @@ User.init({
       user.password = await bcrypt.hash(user.password, 10);
     },
   },
+  
 });
+User.belongsToMany(Role, {
+  through: UserRole,
+  foreignKey: 'user_id',
+  otherKey: 'role_id'
+});
+
 
 export default User;

@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import User from '../models/UserModel';
+import Role from '../models/RoleModel';
+import UserRole from '../models/UserRoleModel';
 import { IUser } from '../interfaces/UserInterface';
 
 // Crear un nuevo usuario
