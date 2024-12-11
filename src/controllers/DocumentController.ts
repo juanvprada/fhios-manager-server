@@ -1,11 +1,38 @@
 import { Request, Response } from 'express';
+import multer from 'multer';
 import Document from '../models/DocumentModel';
 import { IDocument } from '../interfaces/DocumentInterface';
+
+// Configurar el almacenamiento de Multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
+
+// Crear una instancia de Multer con la configuración de almacenamiento
+const upload = multer({ storage });
 
 // Crear un nuevo documento
 export const createDocument = async (req: Request, res: Response): Promise<void> => {
   try {
-    const document: IDocument = req.body;
+    const { task_id } = req.params;
+    if (!req.file) {
+      res.status(400).json({ message: 'No se ha subido ningún archivo' });
+      return;
+    }
+
+    const document: IDocument = {
+      task_id: parseInt(task_id),
+      title: req.body.title,
+      file_path: `uploads/${req.file.filename}`,
+      file_type: req.file.mimetype,
+      uploaded_by: req.body.uploaded_by
+    };
+
     const newDocument = await Document.create(document);
     res.status(201).json(newDocument);
   } catch (err) {

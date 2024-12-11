@@ -1,5 +1,5 @@
 export interface IDocument {
-    document_id: number;
+    document_id?: number;
     project_id?: number;
     task_id?: number;
     title: string;

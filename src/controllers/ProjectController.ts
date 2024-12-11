@@ -6,7 +6,7 @@ import { IProject } from '../interfaces/ProjectInterface';
 export const createProject = async (req: Request, res: Response): Promise<void> => {
   try {
     console.log('Datos recibidos en createProject:', req.body);
-    const { selectedUsers, assignedUsers, ...projectData } = req.body;
+    const { selectedUsers, assignedUsers, created_by, ...projectData } = req.body;
 
     // Usar selectedUsers o assignedUsers, lo que exista
     const users = selectedUsers || assignedUsers || [];
@@ -17,7 +17,8 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
 
     const newProject = await Project.create({
       ...projectData,
-      description
+      description,
+      created_by
     });
 
     console.log('Proyecto creado:', newProject);
