@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Role from '../models/RoleModel';
 import { IRole } from '../interfaces/RoleInterface';
+import sequelize from '../config/sequelize';
 
 // Crear un nuevo rol
 export const createRole = async (req: Request, res: Response): Promise<void> => {
@@ -67,5 +68,62 @@ export const deleteRole = async (req: Request, res: Response): Promise<void> => 
     }
   } catch (err) {
     res.status(500).json({ message: (err as Error).message });
+  }
+};
+
+export const getUserRoles = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { user_id } = req.params;
+    
+    const [roles] = await sequelize.query(`
+      SELECT r.* 
+      FROM roles r
+      INNER JOIN user_roles ur ON r.role_id = ur.role_id
+      WHERE ur.user_id = ?
+    `, {
+      replacements: [user_id]
+    });
+    
+    res.json({
+      success: true,
+      data: roles
+    });
+  } catch (error) {
+    console.error('Error al obtener roles del usuario:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al obtener los roles del usuario'
+    });
+  }
+};
+
+export const updateUserRoles = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { user_id } = req.params;
+    const { roles } = req.body;  // Esperamos un array de role_ids
+
+    // Primero eliminar roles existentes
+    await sequelize.query('DELETE FROM user_roles WHERE user_id = ?', {
+      replacements: [user_id]
+    });
+
+    // Luego insertar los nuevos roles
+    if (roles && roles.length > 0) {
+      const values = roles.map((role_id: number) => [user_id, role_id]);
+      await sequelize.query('INSERT INTO user_roles (user_id, role_id) VALUES ?', {
+        replacements: [values]
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Roles actualizados correctamente'
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Error al actualizar los roles'
+    });
   }
 };
