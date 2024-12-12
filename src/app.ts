@@ -1,4 +1,6 @@
 import express, { Application } from 'express';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import userRoutes from './routes/UserRoute';
@@ -20,7 +22,28 @@ import { s3Client } from './config/s3.config';
 dotenv.config();
 
 const app: Application = express();
+const httpServer = createServer(app);
 const port = process.env.PORT || 3000;
+const io = new Server(httpServer, {
+  cors: {
+    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+  }
+});
+// Configuración de Socket.IO
+io.on('connection', (socket) => {
+  console.log('Cliente conectado a Socket.IO');
+  
+  socket.on('disconnect', () => {
+    console.log('Cliente desconectado de Socket.IO');
+  });
+});
+
+// Exportar función para emitir notificaciones
+export const emitNotification = (userId: number, notification: any) => {
+  io.emit(`notification:${userId}`, notification);
+};
 
 // Configuración de CORS con opciones específicas
 app.use(cors({
@@ -77,9 +100,10 @@ const startServer = async () => {
     await initializeDB();
     
     if (process.env.NODE_ENV !== 'test') {
-      app.listen(port, () => {
+      httpServer.listen(port, () => { 
         console.log(`Servidor corriendo en http://localhost:${port}`);
         console.log('Ambiente:', process.env.NODE_ENV || 'development');
+        console.log('Socket.IO iniciado y escuchando conexiones');
       });
     }
   } catch (error) {
@@ -90,4 +114,4 @@ const startServer = async () => {
 
 startServer();
 
-export default app;
+export { app, httpServer };

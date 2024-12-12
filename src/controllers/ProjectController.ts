@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import Project from '../models/ProjectModel';
+import { emitNotification } from '../app';
+import Notification from '../models/NotificationModel';
 import { IProject } from '../interfaces/ProjectInterface';
 
-// Crear un nuevo proyecto
+
 export const createProject = async (req: Request, res: Response): Promise<void> => {
   try {
     console.log('Datos recibidos en createProject:', req.body);
@@ -20,6 +22,26 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
       description,
       created_by
     });
+
+    // Crear notificaciones para cada usuario asignado
+    for (const userId of users) {
+      try {
+        const notification = await Notification.create({
+          user_id: Number(userId),
+          title: 'Nuevo Proyecto Asignado',
+          message: `Se te ha asignado al proyecto: ${newProject.project_name}`,
+          type: 'project_update',
+          reference_id: newProject.project_id,
+          read_status: false
+        });
+
+        // Emitir la notificación vía Socket.IO
+        emitNotification(Number(userId), notification);
+        console.log(`Notificación enviada al usuario ${userId}`);
+      } catch (error) {
+        console.error(`Error al crear notificación para usuario ${userId}:`, error);
+      }
+    }
 
     console.log('Proyecto creado:', newProject);
 
