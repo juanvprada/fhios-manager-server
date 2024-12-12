@@ -42,6 +42,7 @@ io.on('connection', (socket) => {
 
 // Exportar función para emitir notificaciones
 export const emitNotification = (userId: number, notification: any) => {
+  console.log(`Emitiendo notificación para usuario ${userId}:`, notification);
   io.emit(`notification:${userId}`, notification);
 };
 
