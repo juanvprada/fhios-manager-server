@@ -16,7 +16,7 @@ interface UserAttributes {
   status: 'active' | 'inactive' | 'suspended';
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'user_id' | 'created_at' | 'updated_at' | 'last_login'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'user_id' | 'created_at' | 'updated_at' | 'last_login'> { }
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public user_id!: number;
@@ -80,10 +80,19 @@ User.init({
   timestamps: false,
   hooks: {
     beforeCreate: async (user) => {
-      user.password = await bcrypt.hash(user.password, 10);
+      if (user.password) {
+        user.password = await bcrypt.hash(user.password, 10);
+      }
     },
+    beforeUpdate: async (user) => {
+      // Solo hashear la contraseña si ha sido modificada
+      if (user.changed('password')) {
+        user.password = await bcrypt.hash(user.password, 10);
+      }
+      // Actualizar updated_at
+      user.updated_at = new Date();
+    }
   },
-  
 });
 User.belongsToMany(Role, {
   through: UserRole,

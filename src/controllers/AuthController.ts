@@ -20,8 +20,8 @@ export class AuthController {
   public static async login(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body;
-      const { token, role } = await AuthService.login(email, password); // AuthService ahora devuelve ambos
-      res.status(200).json({ token, role }); // Enviamos ambos al frontend
+      const { token, role } = await AuthService.login(email, password);
+      res.status(200).json({ token, role });
     } catch (error) {
       res.status(401).json({ error: 'Invalid email or password' });
     }
