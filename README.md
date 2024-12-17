@@ -56,7 +56,7 @@ El backend soporta las funcionalidades principales de la plataforma:
 
 - 📋 **Trello**: Gestión del flujo de trabajo.
   
-- 🔄 **Scrum/Kanban**: Métodos ágiles para la organización de tareas.
+- 🔄 **Kanban**: Métodos ágiles para la organización de tareas.
   
 
 ## 🚀 Roadmap
