@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import { jwtConfig } from '../config/config';
 
 export function AuthMiddleware(req: any, res: Response, next: NextFunction): void {
-export function AuthMiddleware(req: any, res: Response, next: NextFunction): void {
   const token = req.headers['authorization']?.split(' ')[1];
 
   if (!token) {
@@ -13,7 +12,6 @@ export function AuthMiddleware(req: any, res: Response, next: NextFunction): voi
 
   try {
     const payload = jwt.verify(token, jwtConfig.secret) as { userId: number };
-    req.user = payload;
     req.user = payload;
     next();
   } catch (error) {
