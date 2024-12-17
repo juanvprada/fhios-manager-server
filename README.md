@@ -8,7 +8,7 @@ Fue en este contexto cuando Fhios confió en nosotros para desarrollar una soluc
 
 Nos propusimos crear una plataforma que no solo respondiera a los requisitos técnicos del cliente, sino que también mejorara la experiencia de todos los usuarios que interactuarían con ella. Desde los desarrolladores hasta los líderes de proyecto, cada rol y función fue diseñado para facilitar el trabajo en equipo, el seguimiento de tareas y la creación de reportes.
 
-**FHIOS Manager** es el resultado de un esfuerzo conjunto de un equipo talentoso que, inspirado en metodologías ágiles como Scrum y Kanban, creó una herramienta poderosa y fácil de usar, construida sobre una arquitectura robusta y flexible.
+**FHIOS Manager** es el resultado de un esfuerzo conjunto de un equipo talentoso que, inspirado en metodologías ágiles como Kanban, creó una herramienta poderosa y fácil de usar, construida sobre una arquitectura robusta y flexible.
 
 Hoy, estamos orgullosos de presentar esta plataforma a **Fhios**, confiando en que será un catalizador para una mayor productividad, comunicación fluida y gestión efectiva de proyectos. 🚀
 
