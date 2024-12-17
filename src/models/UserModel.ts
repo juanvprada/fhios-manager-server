@@ -1,5 +1,8 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/sequelize';
+import bcrypt from 'bcryptjs';
+import Role from './RoleModel';
+import UserRole from './UserRoleModel';
 
 interface UserAttributes {
   user_id: number;
@@ -13,7 +16,7 @@ interface UserAttributes {
   status: 'active' | 'inactive' | 'suspended';
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'user_id' | 'created_at' | 'updated_at' | 'last_login'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'user_id' | 'created_at' | 'updated_at' | 'last_login'> { }
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public user_id!: number;
@@ -25,6 +28,12 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public updated_at?: Date;
   public last_login?: Date;
   public status!: 'active' | 'inactive' | 'suspended';
+
+  // Método para verificar contraseña
+  public async comparePassword(password: string): Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  }
+
 }
 
 User.init({
@@ -68,7 +77,28 @@ User.init({
 }, {
   sequelize,
   tableName: 'users',
-  timestamps: false
+  timestamps: false,
+  hooks: {
+    beforeCreate: async (user) => {
+      if (user.password) {
+        user.password = await bcrypt.hash(user.password, 10);
+      }
+    },
+    beforeUpdate: async (user) => {
+      // Solo hashear la contraseña si ha sido modificada
+      if (user.changed('password')) {
+        user.password = await bcrypt.hash(user.password, 10);
+      }
+      // Actualizar updated_at
+      user.updated_at = new Date();
+    }
+  },
 });
+User.belongsToMany(Role, {
+  through: UserRole,
+  foreignKey: 'user_id',
+  otherKey: 'role_id'
+});
+
 
 export default User;

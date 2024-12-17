@@ -1,0 +1,509 @@
+{
+    "info": {
+      "_postman_id": "fhios-manager-api-collection",
+      "name": "FhiosManager API",
+      "description": "# FhiosManager API Documentation\n\nAPI completa para la gestión de proyectos, usuarios, tareas y documentación.\n\n## Autenticación\nTodas las rutas (excepto /auth/login y /auth/register) requieren autenticación mediante Bearer Token.\n\n## Respuestas Estándar\n```json\n{\n  \"success\": boolean,\n  \"data\": object | array | null,\n  \"error\": string | null,\n  \"message\": string | null\n}\n```\n\n## Códigos de Estado\n- 200: Éxito\n- 201: Creado\n- 400: Error de validación\n- 401: No autorizado\n- 403: Prohibido\n- 404: No encontrado\n- 500: Error del servidor",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:3000/api",
+        "type": "string",
+        "description": "URL base de la API"
+      }
+    ],
+    "auth": {
+      "type": "bearer",
+      "bearer": [
+        {
+          "key": "token",
+          "value": "{{auth_token}}",
+          "type": "string"
+        }
+      ]
+    },
+    "item": [
+      {
+        "name": "Auth",
+        "description": "Endpoints de autenticación y gestión de usuarios",
+        "item": [
+          {
+            "name": "Register",
+            "request": {
+              "method": "POST",
+              "description": "Registra un nuevo usuario en el sistema",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/auth/register",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "register"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"securepass123\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"status\": \"active\"\n}"
+              }
+            },
+            "response": [
+              {
+                "name": "Registro exitoso",
+                "status": "Created",
+                "code": 201,
+                "body": "{\n  \"success\": true,\n  \"data\": {\n    \"user_id\": 1,\n    \"email\": \"user@example.com\",\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"status\": \"active\"\n  },\n  \"message\": \"Usuario registrado exitosamente\"\n}"
+              }
+            ]
+          },
+          {
+            "name": "Login",
+            "request": {
+              "method": "POST",
+              "description": "Inicia sesión y obtiene el token de autenticación",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/auth/login",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "login"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"securepass123\"\n}"
+              }
+            }
+          },
+          {
+            "name": "Get Profile",
+            "request": {
+              "method": "GET",
+              "description": "Obtiene el perfil del usuario autenticado",
+              "header": [],
+              "url": {
+                "raw": "{{base_url}}/auth/profile",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "profile"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Users",
+        "description": "Gestión de usuarios del sistema",
+        "item": [
+          {
+            "name": "Create User",
+            "request": {
+              "method": "POST",
+              "description": "Crea un nuevo usuario (requiere permisos de administrador)",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/users",
+                "host": ["{{base_url}}"],
+                "path": ["users"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"securepass123\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"status\": \"active\"\n}"
+              }
+            }
+          },
+          {
+            "name": "Get Users",
+            "request": {
+              "method": "GET",
+              "description": "Obtiene lista de usuarios (requiere autenticación)",
+              "url": {
+                "raw": "{{base_url}}/users",
+                "host": ["{{base_url}}"],
+                "path": ["users"]
+              }
+            }
+          },
+          {
+            "name": "Update User",
+            "request": {
+              "method": "PUT",
+              "description": "Actualiza información de un usuario",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/users/:user_id",
+                "host": ["{{base_url}}"],
+                "path": ["users", ":user_id"],
+                "variable": [
+                  {
+                    "key": "user_id",
+                    "value": "1",
+                    "description": "ID del usuario a actualizar"
+                  }
+                ]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"first_name\": \"John Updated\",\n  \"last_name\": \"Doe Updated\",\n  \"status\": \"active\"\n}"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Roles",
+        "description": "Gestión de roles y permisos",
+        "item": [
+          {
+            "name": "Create Role",
+            "request": {
+              "method": "POST",
+              "description": "Crea un nuevo rol en el sistema",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/roles",
+                "host": ["{{base_url}}"],
+                "path": ["roles"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"role_name\": \"Project Manager\",\n  \"description\": \"Manages projects and team members\"\n}"
+              }
+            }
+          },
+          {
+            "name": "Assign Role to User",
+            "request": {
+              "method": "POST",
+              "description": "Asigna un rol a un usuario",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/user_roles",
+                "host": ["{{base_url}}"],
+                "path": ["user_roles"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"user_id\": 1,\n  \"role_id\": 1\n}"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Projects",
+        "description": "Gestión de proyectos",
+        "item": [
+          {
+            "name": "Create Project",
+            "request": {
+              "method": "POST",
+              "description": "Crea un nuevo proyecto",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/projects",
+                "host": ["{{base_url}}"],
+                "path": ["projects"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"project_name\": \"New Project\",\n  \"description\": \"Project description\",\n  \"methodology\": \"scrum\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-12-31\",\n  \"status\": \"planning\"\n}"
+              }
+            }
+          },
+          {
+            "name": "Add Project Member",
+            "request": {
+              "method": "POST",
+              "description": "Añade un miembro al proyecto",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/project_members",
+                "host": ["{{base_url}}"],
+                "path": ["project_members"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"project_id\": 1,\n  \"user_id\": 1,\n  \"role_id\": 1\n}"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Tasks",
+        "description": "Gestión de tareas",
+        "item": [
+          {
+            "name": "Create Task",
+            "request": {
+              "method": "POST",
+              "description": "Crea una nueva tarea",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/tasks",
+                "host": ["{{base_url}}"],
+                "path": ["tasks"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"project_id\": 1,\n  \"title\": \"New Task\",\n  \"description\": \"Task description\",\n  \"status\": \"pending\",\n  \"priority\": \"high\",\n  \"estimated_hours\": 8,\n  \"start_date\": \"2024-01-15\",\n  \"due_date\": \"2024-01-20\",\n  \"assigned_to\": 1\n}"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Time Entries",
+        "description": "Gestión de registros de tiempo",
+        "item": [
+          {
+            "name": "Create Time Entry",
+            "request": {
+              "method": "POST",
+              "description": "Registra tiempo trabajado en una tarea",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/time_entries",
+                "host": ["{{base_url}}"],
+                "path": ["time_entries"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"task_id\": 1,\n  \"user_id\": 1,\n  \"hours_logged\": 4.5,\n  \"work_date\": \"2024-01-15\",\n  \"description\": \"Worked on feature implementation\",\n  \"status\": \"pending\"\n}"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Documents",
+        "description": "Gestión de documentos",
+        "item": [
+          {
+            "name": "Upload Document",
+            "request": {
+              "method": "POST",
+              "description": "Sube un documento al sistema",
+              "url": {
+                "raw": "{{base_url}}/documents",
+                "host": ["{{base_url}}"],
+                "path": ["documents"]
+              },
+              "body": {
+                "mode": "formdata",
+                "formdata": [
+                  {
+                    "key": "file",
+                    "type": "file",
+                    "src": []
+                  },
+                  {
+                    "key": "project_id",
+                    "value": "1"
+                  },
+                  {
+                    "key": "title",
+                    "value": "Project Documentation"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Knowledge Base",
+        "description": "Gestión de base de conocimientos",
+        "item": [
+          {
+            "name": "Create Article",
+            "request": {
+              "method": "POST",
+              "description": "Crea un nuevo artículo en la base de conocimientos",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/knowledge_base",
+                "host": ["{{base_url}}"],
+                "path": ["knowledge_base"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"project_id\": 1,\n  \"title\": \"Best Practices\",\n  \"content\": \"Article content here...\"\n}"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Notifications",
+        "description": "Gestión de notificaciones",
+        "item": [
+          {
+            "name": "Create Notification",
+            "request": {
+              "method": "POST",
+              "description": "Crea una nueva notificación",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/notifications",
+                "host": ["{{base_url}}"],
+                "path": ["notifications"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"user_id\": 1,\n  \"title\": \"New Task Assigned\",\n  \"message\": \"You have been assigned a new task\",\n  \"type\": \"info\",\n  \"reference_id\": 1\n}"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Activity Logs",
+        "description": "Registro de actividades del sistema",
+        "item": [
+          {
+            "name": "Create Activity Log",
+            "request": {
+              "method": "POST",
+              "description": "Registra una nueva actividad en el sistema",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/activity_logs",
+                "host": ["{{base_url}}"],
+                "path": ["activity_logs"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"user_id\": 1,\n  \"action_type\": \"create\",\n  \"entity_type\": \"task\",\n  \"entity_id\": 1,\n  \"description\": \"Created new task\"\n}"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "event": [
+      {
+        "listen": "prerequest",
+        "script": {
+          "type": "text/javascript",
+          "exec": [
+            "// Validación de autenticación",
+            "if (!pm.request.url.path.includes('login') && !pm.request.url.path.includes('register')) {",
+            "    const authToken = pm.environment.get('auth_token');",
+            "    if (!authToken) {",
+            "        console.warn('⚠️ Token de autenticación no encontrado');",
+            "    }",
+            "}",
+            "",
+            "// Validación de variables de entorno",
+            "if (!pm.environment.get('base_url')) {",
+            "    console.error('❌ Variable base_url no configurada');",
+            "}",
+            "",
+            "// Timestamp para logs",
+            "pm.environment.set('timestamp', new Date().toISOString());"
+          ]
+        }
+      },
+      {
+        "listen": "test",
+        "script": {
+          "type": "text/javascript",
+          "exec": [
+            "// Validación de respuesta",
+            "pm.test('Status code is successful', function () {",
+            "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202, 204]);",
+            "});",
+            "",
+            "pm.test('Response has correct structure', function () {",
+            "    const responseData = pm.response.json();",
+            "    pm.expect(responseData).to.have.property('success');",
+            "    ",
+            "    if (responseData.success) {",
+            "        pm.expect(responseData).to.have.property('data');",
+            "        if (pm.request.method === 'POST') {",
+            "            pm.expect(responseData.data).to.have.property('id');",
+            "        }",
+            "    } else {",
+            "        pm.expect(responseData).to.have.property('error');",
+            "    }",
+            "});",
+            "",
+            "// Guardado automático del token después del login",
+            "if (pm.request.url.path.includes('login') && pm.response.code === 200) {",
+            "    const responseData = pm.response.json();",
+            "    if (responseData.data && responseData.data.token) {",
+            "        pm.environment.set('auth_token', responseData.data.token);",
+            "        console.log('✅ Token guardado exitosamente');",
+            "    }",
+            "}",
+            "",
+            "// Validación de headers",
+            "pm.test('Response headers are correct', function () {",
+            "    pm.response.to.have.header('Content-Type', 'application/json');",
+            "});"
+          ]
+        }
+      }
+    ]
+  }

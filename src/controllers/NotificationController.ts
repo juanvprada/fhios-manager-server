@@ -69,3 +69,19 @@ export const deleteNotification = async (req: Request, res: Response): Promise<v
     res.status(500).json({ message: (err as Error).message });
   }
 };
+
+export const getUnreadNotificationsByUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = req.params.user_id;
+    const notifications = await Notification.findAll({
+      where: {
+        user_id: userId,
+        read_status: false
+      },
+      order: [['created_at', 'DESC']]
+    });
+    res.status(200).json(notifications);
+  } catch (err) {
+    res.status(500).json({ message: (err as Error).message });
+  }
+};
